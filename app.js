@@ -9,7 +9,7 @@ mongoose.connect('mongodb+srv://avenger:Lr2nN3zVGaXNKGcw@cluster0.cvfas.mongodb.
         useUnifiedTopology:true
     }
 ).then(()=>{
-    console.warn('connected');
+    console.warn('connected to mongodb');
 })
 
 app.get('/',function(req,res){
