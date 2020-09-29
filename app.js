@@ -6,6 +6,9 @@ const jsonParser = bodyParser.json();
 const crypto = require('crypto')
 var key ='password';
 var algo = 'aes256';
+//jwt
+const jwt = require('jsonwebtoken');
+jwtKey = "jwt";
 const User = require('./models/users');
 
 mongoose.connect('mongodb+srv://avenger:Lr2nN3zVGaXNKGcw@cluster0.cvfas.mongodb.net/tutorial?retryWrites=true&w=majority',
@@ -22,14 +25,17 @@ app.post('/register',jsonParser,function(req,res){
     var encrypted = cipher.update(req.body.password,'utf8','hex')+cipher.final('hex');
 
     var data = new User({
-        _id:mongoose.Types.ObjectId(),
-        name:req.body.name,
-        email:req.body.email,
-        password:encrypted,
-        });
+                    _id:mongoose.Types.ObjectId(),
+                    name:req.body.name,
+                    email:req.body.email,
+                    password:encrypted,
+                });
     
     data.save().then((result)=>{
-        res.json(result)
+        jwt.sign({result},jwtKey,{expiresIn:'300s'},(err,token)=>{
+            res.status(201).json({token})
+        })
+        //res.json(result)
     })
     
 });
