@@ -36,7 +36,20 @@ app.post('/register',jsonParser,function(req,res){
             res.status(201).json({token})
         })
         //res.json(result)
-    })
-    
+    })  
 });
+
+app.post('/login',jsonParser,function(req,res){
+    User.findOne({name:req.body.name}).then((data)=>{
+        var decipher = crypto.createDecipher(algo,key);
+        var decrypted = decipher.update(data.password,'hex','utf8')+decipher.final('utf8');
+        if(decrypted == req.body.password){
+            jwt.sign({data},jwtKey,{expiresIn:'300s'},(err,token)=>{
+                res.status(200).json({token});
+            } )
+        }
+    })
+})
+
+
 app.listen(4000);
